@@ -143,3 +143,65 @@
   script.src = API + "?" + query.toString();
   document.body.appendChild(script);
 })();
+/* ============================================================
+   GESTION DU FORMULAIRE DE DEMANDE DÉTAILLÉE
+   ============================================================ */
+(function () {
+  var form = document.getElementById("nc-request-form");
+  if (!form) return; // Si le formulaire n'est pas sur la page, on ne fait rien.
+
+  var message = document.getElementById("nc-form-message");
+  var button = form.querySelector('button[type="submit"]');
+  var params = new URLSearchParams(window.location.search);
+
+  // Pré-remplissage des champs cachés depuis l'URL
+  form.elements.depart.value = params.get("filter-by-Port de départ") || "";
+  form.elements.destination.value = params.get("filter-by-Port d'arrivée") || "";
+  form.elements.container.value = params.get("filter-by-Type de conteneur") || "";
+
+  // Pré-remplissage de l'e-mail depuis la session
+  try {
+    var emailAccueil = sessionStorage.getItem("northcontainer_email");
+    if (emailAccueil) form.elements.email.value = emailAccueil;
+  } catch (e) {}
+
+  var waiting = false;
+  var timer;
+
+  // Écoute du message de succès/erreur venant d'Apps Script
+  window.addEventListener("message", function (event) {
+    var data = event.data;
+    if (!data || data.type !== "northcontainer-form-result") return;
+    clearTimeout(timer);
+    waiting = false;
+    button.disabled = false;
+    button.textContent = "Envoyer ma demande";
+    if (data.success) {
+      message.textContent = "Votre demande a bien été enregistrée. " + (data.dossier ? "Votre numéro de dossier : " + data.dossier : "");
+      form.reset();
+    } else {
+      message.textContent = data.message || "Une erreur est survenue. Réessayez.";
+    }
+  });
+
+  // Gestion de l'envoi
+  form.addEventListener("submit", function (event) {
+    if (waiting) { event.preventDefault(); return; }
+    var caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    var reference = "NC-";
+    for (var i = 0; i < 8; i++) {
+      reference += caracteres[Math.floor(Math.random() * caracteres.length)];
+    }
+    form.elements.dossier.value = reference;
+    waiting = true;
+    button.disabled = true;
+    button.textContent = "Envoi en cours...";
+    message.textContent = "Vous allez recevoir un e-mail de confirmation dans quelques instants. Votre numéro de dossier : " + reference + ".";
+    timer = setTimeout(function () {
+      if (!waiting) return;
+      waiting = false;
+      button.disabled = false;
+      button.textContent = "Envoyer ma demande";
+    }, 30000);
+  });
+})();
