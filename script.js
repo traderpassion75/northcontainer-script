@@ -23,10 +23,11 @@
     secondsLeft--;
     if (secondsLeft > 0) {
       if (statusEl) statusEl.textContent = "Affichage de votre cotation dans " + secondsLeft + "...";
-      if (progressBar) progressBar.style.width = (secondsLeft * 20) + "%";
+      // Calcul pour partir de la droite (0%) et aller vers la gauche (100%)
+      if (progressBar) progressBar.style.width = ((5 - secondsLeft) * 20) + "%";
     } else {
       clearInterval(countdownInterval);
-      // Le temps est écoulé : on cache la barre et le texte définitivement
+      // Le temps est écoulé : on cache la barre et le texte
       if (progressContainer) progressContainer.style.display = "none";
     }
   }, 1000);
@@ -147,11 +148,11 @@
       setValue("nc-delivery-distance", "");
     }
 
-    // On affiche le résultat de la cotation
+    // On affiche le résultat
     var res = root.querySelector("#nc-result");
     if (res) res.style.display = "block";
     
-    // On cache le texte de chargement, mais on laisse la barre de progression finir son animation jusqu'aux 5 secondes
+    // On cache le texte de chargement, mais la barre de progression continue jusqu'à la 5ème seconde
     if (statusEl) statusEl.style.display = "none";
   };
 
