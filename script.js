@@ -1,3 +1,6 @@
+/* ============================================================
+   1. GESTION DE LA COTATION (AFFICHAGE, PROGRESSION, APPEL API)
+   ============================================================ */
 (function() {
   var API = "https://script.google.com/macros/s/AKfycbxRjRVFxUHg0fqu1iH46_b_OJkbOBE9snYeA40ka13Y2THYc0gb6Q7O2trqDCRTkq9Q/exec";
 
@@ -8,14 +11,34 @@
   var depart = params.get("filter-by-Port de départ") || "Shanghai";
   var destination = params.get("filter-by-Port d'arrivée") || "Le Havre";
   var container = params.get("filter-by-Type de conteneur") || "20 pieds";
-  var codePostal = params.get("codePostal") || "76600";
+  var codePostal = params.get("codePostal") || "";
   
-  var status = root.querySelector("#nc-status");
+  var statusEl = document.getElementById("nc-status");
+  var progressContainer = document.getElementById("nc-status-container");
+  var progressBar = document.getElementById("nc-progress-bar");
+
+  // --- GESTION DU COMPTE À REBOURS (5 secondes) ---
+  var secondsLeft = 5;
+  var countdownInterval = setInterval(function() {
+    secondsLeft--;
+    if (secondsLeft > 0) {
+      if (statusEl) statusEl.textContent = "Affichage de votre cotation dans " + secondsLeft + "...";
+      if (progressBar) progressBar.style.width = (secondsLeft * 20) + "%";
+    } else {
+      clearInterval(countdownInterval);
+      // Le temps est écoulé : on cache la barre et le texte
+      if (progressContainer) progressContainer.style.display = "none";
+    }
+  }, 1000);
 
   function showError(msg) {
-    status.textContent = msg;
-    status.className = "nc-status nc-error";
-    status.style.display = "block";
+    clearInterval(countdownInterval);
+    if (progressContainer) progressContainer.style.display = "none";
+    if (statusEl) {
+        statusEl.style.display = "block";
+        statusEl.textContent = msg;
+        statusEl.className = "nc-error";
+    }
     var res = root.querySelector("#nc-result");
     if (res) res.style.display = "none";
   }
@@ -124,8 +147,12 @@
       setValue("nc-delivery-distance", "");
     }
 
-    status.style.display = "none";
-    root.querySelector("#nc-result").style.display = "block";
+    // On affiche le résultat
+    var res = root.querySelector("#nc-result");
+    if (res) res.style.display = "block";
+    
+    // On cache le texte de chargement, mais la barre de progression continue jusqu'à la 5ème seconde
+    if (statusEl) statusEl.style.display = "none";
   };
 
   var query = new URLSearchParams({
@@ -143,23 +170,22 @@
   script.src = API + "?" + query.toString();
   document.body.appendChild(script);
 })();
+
 /* ============================================================
-   GESTION DU FORMULAIRE DE DEMANDE DÉTAILLÉE
+   2. GESTION DU FORMULAIRE DE DEMANDE DÉTAILLÉE
    ============================================================ */
 (function () {
   var form = document.getElementById("nc-request-form");
-  if (!form) return; // Si le formulaire n'est pas sur la page, on ne fait rien.
+  if (!form) return;
 
   var message = document.getElementById("nc-form-message");
   var button = form.querySelector('button[type="submit"]');
   var params = new URLSearchParams(window.location.search);
 
-  // Pré-remplissage des champs cachés depuis l'URL
   form.elements.depart.value = params.get("filter-by-Port de départ") || "";
   form.elements.destination.value = params.get("filter-by-Port d'arrivée") || "";
   form.elements.container.value = params.get("filter-by-Type de conteneur") || "";
 
-  // Pré-remplissage de l'e-mail depuis la session
   try {
     var emailAccueil = sessionStorage.getItem("northcontainer_email");
     if (emailAccueil) form.elements.email.value = emailAccueil;
@@ -168,7 +194,6 @@
   var waiting = false;
   var timer;
 
-  // Écoute du message de succès/erreur venant d'Apps Script
   window.addEventListener("message", function (event) {
     var data = event.data;
     if (!data || data.type !== "northcontainer-form-result") return;
@@ -184,7 +209,6 @@
     }
   });
 
-  // Gestion de l'envoi
   form.addEventListener("submit", function (event) {
     if (waiting) { event.preventDefault(); return; }
     var caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
