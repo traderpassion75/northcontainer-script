@@ -26,7 +26,7 @@
       if (progressBar) progressBar.style.width = (secondsLeft * 20) + "%";
     } else {
       clearInterval(countdownInterval);
-      // Le temps est écoulé : on cache la barre et le texte
+      // Le temps est écoulé : on cache la barre et le texte définitivement
       if (progressContainer) progressContainer.style.display = "none";
     }
   }, 1000);
@@ -147,11 +147,11 @@
       setValue("nc-delivery-distance", "");
     }
 
-    // On affiche le résultat
+    // On affiche le résultat de la cotation
     var res = root.querySelector("#nc-result");
     if (res) res.style.display = "block";
     
-    // On cache le texte de chargement, mais la barre de progression continue jusqu'à la 5ème seconde
+    // On cache le texte de chargement, mais on laisse la barre de progression finir son animation jusqu'aux 5 secondes
     if (statusEl) statusEl.style.display = "none";
   };
 
