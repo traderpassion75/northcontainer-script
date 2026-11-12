@@ -23,7 +23,7 @@
     secondsLeft--;
     if (secondsLeft > 0) {
       if (statusEl) statusEl.textContent = "Affichage de votre cotation dans " + secondsLeft + "...";
-      // Calcul pour partir de la droite (0%) et aller vers la gauche (100%)
+      // Barre qui part de la droite (0%) vers la gauche (100%)
       if (progressBar) progressBar.style.width = ((5 - secondsLeft) * 20) + "%";
     } else {
       clearInterval(countdownInterval);
@@ -86,6 +86,16 @@
     setValue("nc-container", data.container || container);
 
     var fo = data.freightOptions || {};
+    
+    // 📸 ANNUAIRE DES LOGOS (Uniquement en format PNG)
+    var logosTransporteurs = {
+      "msc": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/MSC_logo.svg/320px-MSC_logo.svg.png",
+      "maersk": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Maersk_Group_Logo_2019.svg/320px-Maersk_Group_Logo_2019.svg.png",
+      "cma cgm": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/CMA_CGM_Logo.svg/320px-CMA_CGM_Logo.svg.png",
+      "hapag-lloyd": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Hapag-Lloyd-Logo.svg/320px-Hapag-Lloyd-Logo.svg.png",
+      "cosco": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/COSCO_logo.svg/320px-COSCO_logo.svg.png"
+    };
+
     function renderFreight(key, priceId, transitId) {
       var o = fo[key] || {};
       var priceEl = root.querySelector("#" + priceId);
@@ -94,8 +104,22 @@
       var rawUsd = String(o.prix == null ? "" : o.prix).replace(/\s/g, "").replace("$", "").replace(",", ".");
       var usd = rawUsd === "" ? NaN : Number(rawUsd);
 
+      // Gestion du logo
+      var logoHtml = "";
+      if (o.transporteur) {
+        var nomTransporteur = o.transporteur.toLowerCase().trim();
+        var urlLogo = logosTransporteurs[nomTransporteur];
+        
+        if (urlLogo) {
+          logoHtml = '<div class="nc-logo-container"><img src="' + urlLogo + '" alt="' + o.transporteur + '" class="nc-logo-img"></div>';
+        } else {
+          // Si le transporteur n'est pas dans l'annuaire, on affiche son nom
+          logoHtml = '<div class="nc-logo-container" style="font-size:12px; font-weight:bold; color:#e5a33d;">' + o.transporteur + '</div>';
+        }
+      }
+
       if (!Number.isFinite(usd) || usd <= 0) {
-        priceEl.innerHTML = "—";
+        priceEl.innerHTML = logoHtml + "—";
         setValue(transitId, o.transit ? "Transit : " + o.transit : "Transit : —");
         return;
       }
@@ -112,7 +136,9 @@
       }
 
       var usdFormatted = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(usd);
-      priceEl.innerHTML = '<div class="nc-freight-usd">' + usdFormatted + '</div>' + eurHtml;
+      
+      priceEl.innerHTML = logoHtml + '<div class="nc-freight-usd">' + usdFormatted + '</div>' + eurHtml;
+      
       setValue(transitId, o.transit ? "Transit : " + o.transit : "Transit : —");
     }
 
@@ -148,11 +174,11 @@
       setValue("nc-delivery-distance", "");
     }
 
-    // On affiche le résultat
+    // On affiche le résultat de la cotation
     var res = root.querySelector("#nc-result");
     if (res) res.style.display = "block";
     
-    // On cache le texte de chargement, mais la barre de progression continue jusqu'à la 5ème seconde
+    // On cache le texte de chargement, mais on laisse la barre de progression finir son animation
     if (statusEl) statusEl.style.display = "none";
   };
 
