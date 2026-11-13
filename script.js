@@ -90,7 +90,7 @@
    // 📸 ANNUAIRE DES LOGOS (Liens vers vos propres images hébergées sur GitHub)
     var logosTransporteurs = {
       "msc": "https://traderpassion75.github.io/northcontainer-script/m1s1c1.png",
-      "maersk": "https://traderpassion75.github.io/northcontainer-script/maersk.png",
+      "maersk": "https://traderpassion75.github.io/northcontainer-script/m1a1e1r1s1k1.png",
       "cma cgm": "https://traderpassion75.github.io/northcontainer-script/cma-cgm.png",
       "hapag-lloyd": "https://traderpassion75.github.io/northcontainer-script/hapag.png"
       // Ajoutez vos autres transporteurs ici
