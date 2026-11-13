@@ -85,6 +85,15 @@
     setValue("nc-destination", data.destination || destination);
     setValue("nc-container", data.container || container);
 
+    // ===== AJOUT DE LA DATE DU JOUR =====
+    var dateEl = document.getElementById("nc-current-date");
+    if (dateEl) {
+      var optionsDate = { day: 'numeric', month: 'long', year: 'numeric' };
+      var dateDuJour = new Date().toLocaleDateString('fr-FR', optionsDate);
+      dateEl.textContent = dateDuJour;
+    }
+    // ====================================
+
     var fo = data.freightOptions || {};
     
     // 📸 ANNUAIRE DES LOGOS (Liens vers vos propres images hébergées sur GitHub)
@@ -133,7 +142,7 @@
         eurHtml = '<div class="nc-freight-rate-error">Taux indisponible</div>';
       }
 
-      // 🌟 FORMAT USD MODIFIÉ ICI : "1 600 US$"
+      // 🌟 FORMAT USD : "1 600 US$"
       var usdFormatted = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(usd) + " US$";
       
       priceEl.innerHTML = logoHtml + '<div class="nc-freight-usd">' + usdFormatted + '</div>' + eurHtml;
