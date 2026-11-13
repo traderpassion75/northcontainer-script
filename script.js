@@ -87,13 +87,13 @@
 
     var fo = data.freightOptions || {};
     
-    // 📸 ANNUAIRE DES LOGOS (Uniquement en format PNG)
+   // 📸 ANNUAIRE DES LOGOS (Liens vers vos propres images hébergées sur GitHub)
     var logosTransporteurs = {
-      "msc": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/MSC_logo.svg/320px-MSC_logo.svg.png",
-      "maersk": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Maersk_Group_Logo_2019.svg/320px-Maersk_Group_Logo_2019.svg.png",
-      "cma cgm": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/CMA_CGM_Logo.svg/320px-CMA_CGM_Logo.svg.png",
-      "hapag-lloyd": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Hapag-Lloyd-Logo.svg/320px-Hapag-Lloyd-Logo.svg.png",
-      "cosco": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/COSCO_logo.svg/320px-COSCO_logo.svg.png"
+      "msc": "https://traderpassion75.github.io/northcontainer-script/m1s1c1.png",
+      "maersk": "https://traderpassion75.github.io/northcontainer-script/maersk.png",
+      "cma cgm": "https://traderpassion75.github.io/northcontainer-script/cma-cgm.png",
+      "hapag-lloyd": "https://traderpassion75.github.io/northcontainer-script/hapag.png"
+      // Ajoutez vos autres transporteurs ici
     };
 
     function renderFreight(key, priceId, transitId) {
