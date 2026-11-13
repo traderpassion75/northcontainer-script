@@ -87,13 +87,12 @@
 
     var fo = data.freightOptions || {};
     
-   // 📸 ANNUAIRE DES LOGOS (Liens vers vos propres images hébergées sur GitHub)
+    // 📸 ANNUAIRE DES LOGOS (Liens vers vos propres images hébergées sur GitHub)
     var logosTransporteurs = {
       "msc": "https://traderpassion75.github.io/northcontainer-script/m1s1c1.png",
       "maersk": "https://traderpassion75.github.io/northcontainer-script/m1a1e1r1s1k1.png",
       "cma cgm": "https://traderpassion75.github.io/northcontainer-script/c1m1a1.png",
       "hapag-lloyd": "https://traderpassion75.github.io/northcontainer-script/hapag.png"
-      // Ajoutez vos autres transporteurs ici
     };
 
     function renderFreight(key, priceId, transitId) {
@@ -113,7 +112,6 @@
         if (urlLogo) {
           logoHtml = '<div class="nc-logo-container"><img src="' + urlLogo + '" alt="' + o.transporteur + '" class="nc-logo-img"></div>';
         } else {
-          // Si le transporteur n'est pas dans l'annuaire, on affiche son nom
           logoHtml = '<div class="nc-logo-container" style="font-size:12px; font-weight:bold; color:#e5a33d;">' + o.transporteur + '</div>';
         }
       }
@@ -135,7 +133,8 @@
         eurHtml = '<div class="nc-freight-rate-error">Taux indisponible</div>';
       }
 
-      var usdFormatted = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(usd);
+      // 🌟 FORMAT USD MODIFIÉ ICI : "1 600 US$"
+      var usdFormatted = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(usd) + " US$";
       
       priceEl.innerHTML = logoHtml + '<div class="nc-freight-usd">' + usdFormatted + '</div>' + eurHtml;
       
