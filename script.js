@@ -85,14 +85,26 @@
     setValue("nc-destination", data.destination || destination);
     setValue("nc-container", data.container || container);
 
-    // ===== AJOUT DE LA DATE DU JOUR =====
-    var dateEl = document.getElementById("nc-current-date");
-    if (dateEl) {
+    // ===== DATE DE MISE À JOUR ALÉATOIRE (2 à 4 jours en arrière) =====
+    var dateMajEl = document.getElementById("nc-date-maj");
+    if (dateMajEl) {
+      var dateActuelle = new Date();
+      var joursEnArriere = Math.floor(Math.random() * 3) + 2; // Tire un nombre entre 2 et 4
+      dateActuelle.setDate(dateActuelle.getDate() - joursEnArriere);
+      
       var optionsDate = { day: 'numeric', month: 'long', year: 'numeric' };
-      var dateDuJour = new Date().toLocaleDateString('fr-FR', optionsDate);
-      dateEl.textContent = dateDuJour;
+      var dateFormatee = dateActuelle.toLocaleDateString('fr-FR', optionsDate);
+      
+      dateMajEl.textContent = "Mise à jour le " + dateFormatee;
     }
-    // ====================================
+
+    // ===== DATE DU JOUR POUR LA NOTE DE CONVERSION =====
+    var noteConversion = document.querySelector(".nc-taux-note");
+    if (noteConversion) {
+      var dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+      var dateTexte = new Date().toLocaleDateString('fr-FR', dateOptions);
+      noteConversion.innerHTML = "Conversion USD → EUR au taux du " + dateTexte + ".";
+    }
 
     var fo = data.freightOptions || {};
     
@@ -142,7 +154,7 @@
         eurHtml = '<div class="nc-freight-rate-error">Taux indisponible</div>';
       }
 
-      // 🌟 FORMAT USD : "1 600 US$"
+      // FORMAT USD : "1 600 US$"
       var usdFormatted = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(usd) + " US$";
       
       priceEl.innerHTML = logoHtml + '<div class="nc-freight-usd">' + usdFormatted + '</div>' + eurHtml;
