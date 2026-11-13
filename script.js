@@ -91,7 +91,7 @@
     var logosTransporteurs = {
       "msc": "https://traderpassion75.github.io/northcontainer-script/m1s1c1.png",
       "maersk": "https://traderpassion75.github.io/northcontainer-script/m1a1e1r1s1k1.png",
-      "cma cgm": "https://traderpassion75.github.io/northcontainer-script/c1m1a1c1g1m1.png",
+      "cma cgm": "https://traderpassion75.github.io/northcontainer-script/c1m1a1.png",
       "hapag-lloyd": "https://traderpassion75.github.io/northcontainer-script/hapag.png"
       // Ajoutez vos autres transporteurs ici
     };
